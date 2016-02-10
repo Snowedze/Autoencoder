@@ -1,7 +1,7 @@
 # Autoencoder
 I'm new on all of this.
 
-I'm based on this code:
+I've based on this code:
 https://jmetzen.github.io/2015-11-27/vae.html
 
 He used MNIST, but i'm tryng with my own data
