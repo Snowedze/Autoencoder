@@ -1,1 +1,167 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+import numpy as np
+import numpy
+from random import randint
 
+
+jj = 3025  #pix linear, number of pixels per image 55x55 = 3025
+pix_xy = int(np.sqrt(jj))
+arquivo = 'exampledata_2.dat'
+
+
+
+def extrairImg(filename, n):
+
+    a = np.loadtxt(filename, int) #or float depends of
+    print (a.shape)
+
+    n1 = n
+    imagem = a.astype(np.float32)
+    imagem = np.multiply(imagem, 1.0 / 255.0) # transform the values on grayscale betwen 0~1
+
+    matrix1 = matriz(n1, jj)
+
+    vl = 1  #number of values per line on data file
+
+    razao = int (jj/vl)   #number of pixels per line / numper of pixels on data set line = reshape matrix(3025000 , 1)  into (1000, 3025)
+    matrix0 = imagem
+    inicio = 0
+    k=0
+    fim = inicio + razao
+    for i in range(n1):
+        p=0
+
+        for j in range(inicio, fim, 1):
+            for v in range(vl):
+                matrix1[i][p] = matrix0[k] 
+                p+=1
+                k+=1
+        inicio += razao
+        fim = inicio + razao
+
+    return matrix1
+
+
+def read_data_sets_treino(n_samp):
+    TRAIN_IMAGE1 = arquivo
+
+    matrix2 = read_data_sets(TRAIN_IMAGE1, n_samp)
+    return matrix2
+
+class DataSet(object):
+  def __init__(self, images):
+
+      self._num_examples = len(images)
+      self._images = images
+      self._epochs_completed = 0
+      self._index_in_epoch = 0
+  @property
+  def images(self):
+    return self._images
+  @property
+  def num_examples(self):
+    return self._num_examples
+  @property
+  def epochs_completed(self):
+    return self._epochs_completed
+  def next_batch(self, batch_size, pixelx, fake_data=False):
+    """Return the next `batch_size` examples from this data set."""
+    
+    start = self._index_in_epoch
+    self._index_in_epoch += batch_size
+    if self._index_in_epoch > self._num_examples:
+      # Finished epoch
+      self._epochs_completed += 1
+      # Shuffle the data
+      perm = numpy.arange(self._num_examples)
+      numpy.random.shuffle(perm)
+      self._images = self._images[perm]
+      # Start next epoch
+      start = 0
+      self._index_in_epoch = batch_size
+      assert batch_size <= self._num_examples
+    end = self._index_in_epoch
+    return self._images[start:end]
+
+
+def read_data_sets(TRAIN_IMAGE1, n):
+    class DataSets(object):
+        pass
+
+    train_images = extrairImg(TRAIN_IMAGE1, n)
+
+    return train_images
+
+
+
+def criacaomatrix(linha, fh, fp, matrix3, data1, n):
+
+    inicio1 = n * fh
+    fim1 = inicio1 + fh
+    p=0
+
+    for i in range (inicio1,fim1,1):
+        for j in range (linha):
+            matrix3[p][j] = data1[i][j]
+        p += 1
+
+    return matrix3
+
+
+def train(batch_size, data1, n):
+    """
+    :rtype: object
+    """
+    matrix3 = matriz(batch_size,jj)
+    matrix3 = criacaomatrix(jj, batch_size, 0, matrix3, data1, n)
+
+    return matrix3
+
+
+def test(batch_size, data1, n, n_train):
+
+    data11 = data1
+    data2 = data11
+    perm = numpy.arange(n_train).reshape((n_train, 1))
+
+    for i in range(randint(0,9)):
+        numpy.random.shuffle(perm)
+
+    for i in range(n_train):
+        for j in range(jj):
+            data2[i][j] = data11[perm[i]][j]
+    matrix2 = train(batch_size, data2, n)
+    return matrix2
+
+def back_matrix(matrix, n):
+    matrix2 = matrix
+    matrixp = matriz(pix_xy, pix_xy)
+    init = n*pix_xy
+    fim = init + pix_xy
+
+    p=0
+    for i in range(0, pix_xy, 1):
+        for j in range(pix_xy):
+            matrixp[i][j] = matrix2[n][p]
+            p += 1
+
+    return matrixp
+
+def plot_linha(matrix1, a):
+    matrix2 = matriz(jj,1)
+    b = a+1
+    for i in range(a,b,1):
+        for j in range(jj):
+            matrix2[j][0] = matrix1[i][j]
+    return matrix2
+
+def matriz(ni, nj):  #create a matrix
+    matrix = []
+    for i in range(ni):
+        linha=[]
+        for j in range(nj):
+            linha = linha + [0.0]
+        matrix = matrix + [linha]
+    return matrix
