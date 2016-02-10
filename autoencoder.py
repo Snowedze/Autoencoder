@@ -18,9 +18,8 @@ data1 = importer_.read_data_sets_treino(n_samples)   #treatment of the data, mak
 
 def val_input():
     global num_epoch, num_batch
-    #pxs = input('Quantidade de pixels (784): ')
-    num_epoch = input('Training epochs(maybe 30~60 [1039]): ')
-    num_batch = input('batch_size(100~+): ')
+    num_epoch = input('Training epochs(maybe 30~70): ')
+    num_batch = input('batch_size(50~100): ')
 
 
 
