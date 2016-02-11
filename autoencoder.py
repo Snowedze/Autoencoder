@@ -153,9 +153,6 @@ class VariationalAutoencoder(object):
             tf.nn.sigmoid(tf.add(tf.matmul(layer_3, weights['out_mean']),   #layer_4
                                  biases['out_mean']))
 
-
-        ###################################********************###################################
-
         return x_reconstr_mean
 
     def _create_loss_optimizer(self):
